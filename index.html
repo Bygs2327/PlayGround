@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+  <meta name="theme-color" content="#040608" />
+  <meta name="description" content="ROOT//ACCESS — a fictional text-based hacking simulation for phone and tablet." />
+  <title>ROOT//ACCESS — Hacker Sim</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div class="crt" aria-hidden="true"></div>
+
+  <!-- START / BOOT -->
+  <div id="start" class="start">
+    <div class="start-inner">
+      <div class="boot-top">
+        <span>NEXUS//OS 0.9.4</span>
+        <span class="boot-live"><i></i> SECURE CHANNEL</span>
+      </div>
+
+      <div class="logo-wrap" aria-label="ROOT ACCESS">
+        <pre class="ascii-logo" aria-hidden="true">  ██████╗  ██████╗  ██████╗ ████████╗
+  ██╔══██╗██╔═══██╗██╔═══██╗╚══██╔══╝
+  ██████╔╝██║   ██║██║   ██║   ██║
+  ██╔══██╗██║   ██║██║   ██║   ██║
+  ██║  ██║╚██████╔╝╚██████╔╝   ██║
+  ╚═╝  ╚═╝ ╚═════╝  ╚═════╝    ╚═╝</pre>
+        <div class="logo-access"><span class="logo-slashes">//</span>ACCESS</div>
+        <p class="tagline">EVERY SYSTEM HAS A DOOR.</p>
+      </div>
+
+      <div class="boot-lines" id="boot-lines" aria-hidden="true">
+        <div><span class="ok">[ok]</span> kernel modules loaded</div>
+        <div><span class="ok">[ok]</span> dead-drop channel verified</div>
+        <div><span class="warn">[!!]</span> local trace: empty. for now.</div>
+      </div>
+
+      <div class="start-copy">
+        <p>New Meridian, 2086. You have a secondhand rig, a dead-drop handle, and a talent for finding the doors people forget to lock.</p>
+        <p class="muted">Take contracts. Steal data. Sell it. Try not to become a file on someone's desk.</p>
+      </div>
+
+      <div class="handle-field">
+        <label for="handle-input">OPERATOR HANDLE</label>
+        <div class="handle-input-wrap">
+          <span>@</span>
+          <input id="handle-input" type="text" maxlength="14" spellcheck="false" autocomplete="off" autocapitalize="off" value="nullbyte" aria-label="Operator handle" />
+        </div>
+      </div>
+
+      <div class="start-actions">
+        <button id="start-btn" class="btn btn-primary btn-block">JACK IN <span class="btn-arrow">→</span></button>
+        <button id="continue-btn" class="btn btn-ghost btn-block hidden">RESUME SESSION</button>
+      </div>
+
+      <div class="start-footer">
+        <button class="link-btn" id="start-help">HOW TO PLAY</button>
+        <span class="dot">·</span>
+        <span>HEADPHONES RECOMMENDED</span>
+      </div>
+
+      <p class="disclaimer">FICTIONAL SIMULATION · NO REAL ATTACKS OR MALWARE · REAL-WORLD NAMES USED FOR HISTORICAL CONTEXT</p>
+    </div>
+  </div>
+
+  <!-- GAME SHELL -->
+  <div id="game" class="shell hidden">
+    <header class="hud">
+      <div class="brand-row">
+        <div class="brand"><span class="brand-mark">▚</span>ROOT<span class="brand-slash">//</span>ACCESS</div>
+        <div class="hud-actions">
+          <button class="icon-btn" id="sound-btn" data-action="toggle-sound" aria-label="Toggle sound" title="Toggle sound">♪</button>
+          <button class="icon-btn" data-action="open-help" aria-label="How to play" title="How to play">?</button>
+        </div>
+      </div>
+
+      <div class="id-row">
+        <div class="id-main">
+          <span id="hud-handle" class="hud-handle">@nullbyte</span>
+          <span id="hud-rank" class="hud-rank">SCRIPT KIDDIE</span>
+        </div>
+        <div class="id-day"><span id="hud-day">DAY 01</span><span class="sep">/</span><span id="hud-power">PWR 8/8</span></div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <span class="stat-label">CREDITS</span>
+          <strong class="stat-value" id="hud-credits">¤ 0</strong>
+        </div>
+        <div class="stat">
+          <span class="stat-label">STREET REP</span>
+          <strong class="stat-value" id="hud-rep">0</strong>
+        </div>
+        <div class="stat">
+          <span class="stat-label">DARKNET</span>
+          <strong class="stat-value" id="hud-dark">0 <em id="hud-dark-rank">LURKER</em></strong>
+        </div>
+      </div>
+
+      <div class="heat-row" id="heat-row">
+        <div class="heat-top">
+          <span class="heat-label">HEAT <em id="heat-state">UNNOTICED</em></span>
+          <span class="heat-value" id="heat-value">0%</span>
+        </div>
+        <div class="heat-track"><div class="heat-fill" id="heat-fill"></div><div class="heat-ticks"></div></div>
+      </div>
+    </header>
+
+    <main id="view" class="view" aria-live="polite"></main>
+
+    <nav class="tabbar" aria-label="Main navigation">
+      <button class="tab active" data-tab="ops">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3z"/><path d="M7 10l3 2-3 2M13 14h4"/></svg>
+        <span>OPS</span>
+      </button>
+      <button class="tab" data-tab="arsenal">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v13H4z"/><path d="M8 7V4h8v3M8 12h8M8 16h5"/></svg>
+        <span>ARSENAL</span>
+      </button>
+      <button class="tab" data-tab="market">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16l-1 12H5L4 8z"/><path d="M8 8V6a4 4 0 018 0v2"/></svg>
+        <span>MARKET</span>
+      </button>
+      <button class="tab" data-tab="safehouse">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>
+        <span>SAFEHOUSE</span>
+      </button>
+      <button class="tab" data-tab="intel">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18h3V9H4zM10.5 18h3V4h-3zM17 18h3v-6h-3z"/></svg>
+        <span>INTEL</span>
+      </button>
+    </nav>
+  </div>
+
+  <div id="overlay" class="overlay-root"></div>
+  <div id="toasts" class="toasts" aria-live="assertive"></div>
+
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
